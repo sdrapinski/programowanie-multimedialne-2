@@ -49,8 +49,8 @@ def draw_scene(window, angle_x, angle_y):
 
 	M = glm.rotate(angle_y, glm.vec3(0, 1, 0)) * glm.rotate(angle_x, glm.vec3(1, 0, 0))
 	glUniformMatrix4fv(DemoShaders.spConstant.u("M"), 1, GL_FALSE, M.to_list())
-
-	torus.drawWire()
+	glUniform4f(DemoShaders.spConstant.u("color"), 1.0, 0.0, 0.0, 1.0)
+	torus.drawSolid()
 
 	glfw.swap_buffers(window)
 

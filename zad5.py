@@ -2,10 +2,13 @@ from OpenGL.GL import *
 import glfw
 import glm
 
+from MyCube import * 
+
 from helpers.shaders import DemoShaders
 from helpers.models import *
 
 torus = Torus()
+
 
 speed_y = 0.0  # Prędkość obrotu wokół osi Y [rad/s]
 speed_x = 0.0  # Prędkość obrotu wokół osi X [rad/s]
@@ -43,14 +46,26 @@ def draw_scene(window, angle_x, angle_y):
 	)
 	P = glm.perspective(glm.radians(50.0), 1.0, 1.0, 50.0)
 
-	DemoShaders.spConstant.use()
-	glUniformMatrix4fv(DemoShaders.spConstant.u("P"), 1, GL_FALSE, P.to_list())
-	glUniformMatrix4fv(DemoShaders.spConstant.u("V"), 1, GL_FALSE, V.to_list())
+	DemoShaders.spColored.use()
+	glUniformMatrix4fv(DemoShaders.spColored.u("P"), 1, GL_FALSE, P.to_list())
+	glUniformMatrix4fv(DemoShaders.spColored.u("V"), 1, GL_FALSE, V.to_list())
 
 	M = glm.rotate(angle_y, glm.vec3(0, 1, 0)) * glm.rotate(angle_x, glm.vec3(1, 0, 0))
-	glUniformMatrix4fv(DemoShaders.spConstant.u("M"), 1, GL_FALSE, M.to_list())
+	glUniformMatrix4fv(DemoShaders.spColored.u("M"), 1, GL_FALSE, M.to_list())
 
-	torus.drawWire()
+	vertices = Cubevertices
+	colors = Cubecolors
+	vertexCount = CubevertexCount
+	glEnableVertexAttribArray(DemoShaders.spColored.a("vertex"))
+	glEnableVertexAttribArray(DemoShaders.spColored.a("color"))
+	glVertexAttribPointer(DemoShaders.spColored.a("vertex"), 4, GL_FLOAT, False, 0, vertices)
+	glVertexAttribPointer(DemoShaders.spColored.a("color"), 4, GL_FLOAT, False, 0, colors)
+	glDrawArrays(GL_TRIANGLES, 0, vertexCount)
+	glDisableVertexAttribArray(DemoShaders.spColored.a("vertex"))
+	glDisableVertexAttribArray(DemoShaders.spColored.a("color"))
+
+	torus.drawSolid()
+
 
 	glfw.swap_buffers(window)
 

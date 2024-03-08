@@ -1,6 +1,6 @@
-vertexCount = 36
+CubevertexCount = 36
 
-vertices = [
+Cubevertices = [
 	1.0,
 	-1.0,
 	-1.0,
@@ -147,7 +147,7 @@ vertices = [
 	1.0,
 ]
 
-colors = [
+Cubecolors = [
 	1.0,
 	0.0,
 	0.0,

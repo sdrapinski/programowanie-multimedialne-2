@@ -35,6 +35,7 @@ def init_opengl_program(window):
 
 def draw_scene(window, angle_x, angle_y):
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+	glEnable(GL_DEPTH_TEST)
 
 	V = glm.lookAt(
 		glm.vec3(0.0, 0.0, -5.0),
@@ -43,14 +44,14 @@ def draw_scene(window, angle_x, angle_y):
 	)
 	P = glm.perspective(glm.radians(50.0), 1.0, 1.0, 50.0)
 
-	DemoShaders.spConstant.use()
-	glUniformMatrix4fv(DemoShaders.spConstant.u("P"), 1, GL_FALSE, P.to_list())
-	glUniformMatrix4fv(DemoShaders.spConstant.u("V"), 1, GL_FALSE, V.to_list())
+	DemoShaders.spLambert.use()
+	glUniformMatrix4fv(DemoShaders.spLambert.u("P"), 1, GL_FALSE, P.to_list())
+	glUniformMatrix4fv(DemoShaders.spLambert.u("V"), 1, GL_FALSE, V.to_list())
 
 	M = glm.rotate(angle_y, glm.vec3(0, 1, 0)) * glm.rotate(angle_x, glm.vec3(1, 0, 0))
-	glUniformMatrix4fv(DemoShaders.spConstant.u("M"), 1, GL_FALSE, M.to_list())
-
-	torus.drawWire()
+	glUniformMatrix4fv(DemoShaders.spLambert.u("M"), 1, GL_FALSE, M.to_list())
+	glUniform4f(DemoShaders.spConstant.u("color"), 1.0, 0.0, 0.0, 1.0)
+	torus.drawSolid()
 
 	glfw.swap_buffers(window)
 
@@ -60,6 +61,7 @@ def free_opengl_program(window):
 
 def main():
 	glfw.init()
+	
 	window = glfw.create_window(500, 500, "Programowanie multimedialne", None, None)
 	glfw.make_context_current(window)
 	glfw.swap_interval(1)
